@@ -45,6 +45,8 @@ int DeleteElem(List* list, int idx);
 
 Errors ListVerifyer(const List* list);
 
+int ListDtor(List* list);
+
 int PushAfter(List* list, int prev, int value)
 {
     if (ListVerifyer(list) != OK) return -1;
@@ -129,6 +131,20 @@ int DeleteElem(List* list, int idx)
     list->next[idx] = list->free_head;
     list->prev[idx] = NIL;
     list->free_head = idx;
+
+    return 0;
+}
+
+int ListDtor(List* list)
+{
+    if (!list) return 1;
+
+    free(list->data);
+    free(list->next);
+    free(list->next);
+    list->free_head = 0;
+
+    list = NULL;
 
     return 0;
 }
