@@ -145,6 +145,7 @@ void DotDump(const List* list, const char* filename)
 
     fprintf(f, "digraph List {\n");
     fprintf(f, "  rankdir=LR;\n");
+    fprintf(f, "  splines=polyline;\n");
     fprintf(f, "  node [fontname=\"monospace\", fontsize=10, shape=Mrecord];\n");
     fprintf(f, "  edge [fontname=\"monospace\", fontsize=9];\n\n");
 
@@ -155,9 +156,9 @@ void DotDump(const List* list, const char* filename)
         if (i == 0) {
             fill = "#c10aee"; style = "filled";
         } else if (list->prev[i] == NIL) {
-            fill = "#E8E8E8"; style = "filled,dashed";
+            fill = "#a6ff92"; style = "filled,dashed";
         } else {
-            fill = "#C0FFC0"; style = "filled";
+            fill = "#a1a3fb"; style = "filled";
         }
         fprintf(f, "  n%d [style=\"%s\", fillcolor=\"%s\", color=\"#008000\", "
                    "label=\"idx %d | val %d | next %d | prev %d\"];\n",
@@ -178,12 +179,10 @@ void DotDump(const List* list, const char* filename)
     fprintf(f, "  TAIL [shape=Mrecord, style = filled, fillcolor = \"#eec705\", label=\"TAIL\"];\n");
     fprintf(f, "  { rank=same; TAIL; n%d; }\n", last);
     fprintf(f, "  TAIL -> n%d [style=invis];\n", last);
-    fprintf(f, "  n%d -> TAIL [color=\"#0050C0\", constraint=false];\n", last);
 
     if (list->next[0] != 0)
         fprintf(f, "  n0 -> n%d [color=\"#0050C0\", penwidth=2, constraint=false];\n", list->next[0]);
 
-    fprintf(f, "  TAIL -> n0 [color=\"#0050C0\", constraint=false, style=dashed];\n");
                 
 
     int visited[CAPACITY] = {};
@@ -203,8 +202,10 @@ void DotDump(const List* list, const char* filename)
         if (n != 0)
             fprintf(f, "  n%d:e -> n%d:w [color=\"#0050C0\", constraint=false];\n", cur, n);
         else
+        {
             fprintf(f, "  n%d:s -> TAIL:n [color=\"#0050C0\", constraint=false];\n", cur);
-
+            fprintf(f, "  n%d:s -> n0:n [color=\"#0050C0\", constraint=false, style=dashed];\n", cur);
+        }
         cur = n;
         steps++;
     }
