@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include "List.h"
-#include "Verifyer.h"
+#include "List.cpp"
+#include "Verifyer.cpp"
 
 int CompareUp(int a, int b)
 {
@@ -57,22 +57,23 @@ int main()
     InitList(&list);
 
     const char* html = "history.html";
-    HtmlBegin(html);
+    FILE* f = HtmlBegin(html);
 
-    HtmlDump(&list, "begin.png", "step 0: empty", html);
+    HtmlDump(f, &list, "begin.png", "step 0: empty");
 
     for (int i = 0; i < (CAPACITY - (rand() % CAPACITY)); i++)
     {
-        PushAfter(&list, i, rand());
+        if (i == 0) InsertAfter(&list, i, rand());
+        else InsertBefore(&list, i, rand());
         char s[100] = {};
         sprintf(s, "step%d.png", i);
-        HtmlDump(&list, s, "", html);
+        HtmlDump(f, &list, s, "");
     }
 
     ListSort(&list, CompareUp);
-    HtmlDump(&list, "sort.png", "sorted", html);
+    HtmlDump(f, &list, "sort.png", "sorted");
 
-    HtmlEnd(html);
+    HtmlEnd(f);
     return 0;
 }
 
